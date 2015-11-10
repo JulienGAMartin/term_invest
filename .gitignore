@@ -1,0 +1,9 @@
+beforegit/
+old/
+
+*.aux
+*.bbl
+*.blg
+*.log
+*.spl
+*~
