@@ -1,0 +1,297 @@
+\documentclass[12pt,review,authoryear]{elsarticle}
+
+\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{lineno}
+\linenumbers
+
+\begin{document}
+
+\begin{frontmatter}
+	\title{Terminal investment equations}
+
+	\author{Julien G.A. Martin\corref{cor1}}
+	\ead{julienmartin@abdn.ac.uk}
+
+	\author{A. Bradley Duthie\corref{}}
+	%\ead{a.duthie@abdn.ac.uk}
+
+	\cortext[cor1]{Corresponding author}
+	
+	\address{Institute of Biological and Environmental Sciences\\
+	 	University of Aberdeen, Zoology Building, Tillydrone Avenue\\
+	 	Aberdeen, AB24 2TZ, Scotland, UK}
+
+	\begin{abstract}
+		In this work we demonstrate the formation of a new type of
+		polariton on the interface between a ....
+	\end{abstract}
+
+	\begin{keyword}
+		quadruple exiton \sep polariton \sep WGM\sep BEC
+	\end{keyword}
+
+\end{frontmatter}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% Introduction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\subsection{Definition of terminal investment}
+I attempt here to use an approach considering that an individual not only  varies is reproductive investment in terms of number of young produce but also in terms of young quality to see when an individual should terminally invest. Terminal investment is define here as an increase in reproduction decreasing survival to 0 for a discrete age ($x$). Continuous forms of terminal investment (\textit{sensu} \citealt{Pianka_Agespecific_1975}) are not considered.
+
+
+\subsection{Classic terminal investment}
+\cite{Williams_Natural_1966} defined the reproductive value, $RV_{x}$, and the residual reproductive value, $RV'_{x}$, of an individual of age $x$ in a stable population as:
+\begin{equation}\label{eq:RV}
+\begin{split} 
+RV_x& = m_x + RV'_{x} \\ \\
+& = m_x + \sum_{t= x + 1}^{\infty} \frac{l_t}{l_x} \cdot m_t
+\end{split}
+\end{equation}
+in which $m_x$ is the fecundity (\textit{i.e.} number of offspring) of an individual of age $x$ and $l_x$ is the survival probability from age 0 to age $x$. This equation intuitively shows that the reproductive value of an individual of age $x$ is the sum of its potential reproductions weighted by its survival probabilities from age $x$ to each subsequent reproduction event. The residual reproductive value, $RV'_{x}$, is similar to the $RV_{x}$ but excludes the reproduction at age $x$.
+
+If we define $\Delta m_{x}$ as the gain in fecundity obtained by terminally investing at age $x$, then following a ``classic'' terminal investment approach \citep{Pianka_Agespecific_1975,Williams_Natural_1966}, an individual should terminally invest when:
+\begin{equation}\label{eq:tic}
+\Delta m_{x} > RV'_{x}.
+\end{equation}
+Terminal investment predictions are thus based solely on the variation of the survival-reproduction trade-off curve with age. This limits terminal investment theory by restricting it to only consider increases in immediate fecundity and future reproductive output.
+
+\subsection{Using expected fitness $W_{x}$ instead of the reproductive value $RV_x$}
+\cite{Hirshfield_Natural_1975} proposed a slightly modified version of the reproductive value equation \eqref{eq:RV} to define expected fitness. Because an individual's fitness depends on the quality of young produced, they weighed each reproductive event by the offspring survival probability to maturity, $k_x$. It should be noted that $k_x$ is not fixed and is allowed to vary as a function of the age of the individual. 
+\cite{Hirshfield_Natural_1975} expressed expected fitness as:
+\begin{equation}\label{eq:wx}
+W_{x} = m_x \cdot k_x + \sum_{t= x + 1}^{\infty} \frac{l_t}{l_x} \cdot m_t \cdot k_t.
+\end{equation}
+
+If $k_x$ is unaffected by terminal investment, then the prediction for terminal investment using $W_{x}$ is similar to inequality \eqref{eq:tic}. However, if $k_x$ is affected by terminal investment, then an individual should terminally invest when:
+\begin{equation}\label{eq:wxti}
+\begin{split}
+\def\tallest{\vphantom{\sum_{1}^{1} \frac{1}{1}}}
+\underbrace{\left(m_{x} + \Delta m_{x}\right)\tallest}_{\text{Fecundity}} \cdot 
+\underbrace{\left(k_{x} + \Delta k_{x}\right)\tallest}_{\text{Survival}} &> 
+\def\tallest{\vphantom{\sum_{1}^{1} \frac{1}{1}}}
+\underbrace{ m_{x} \cdot k_{x}\tallest }_{\text{Actual repr}} + 
+\underbrace{ \sum_{t= x + 1}^{\infty} \frac{l_t}{l_x} \cdot m_t \cdot k_t}_{\text{Residual repr value}}
+ \\ \\ 
+m_x \cdot \Delta k_{x} + \Delta m_{x} \cdot k_x + \Delta m_{x} \cdot \Delta k_{x} &> \sum_{t= x + 1}^{\infty} \frac{l_t}{l_x} \cdot m_t \cdot k_t
+\end{split}
+\end{equation}
+In inequality \ref{eq:wxti}, $\Delta m_{x}$ and $\Delta k_{x}$ are the increases in fecundity and juvenile survivorship to maturity due to terminal investment, respectively. If this estimation of expected fitness provides interesting new insights about terminal investment, we feel that that it is still too restrictive since it assumes that an effect only on survival of the offspring and not on their reproduction potential.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% The model (section 2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{New terminal investment model}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% Simulaitons (section 3)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Simulations}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% Discussion (section 4)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Discussion}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% References
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{References}
+
+	\bibliographystyle{elsarticle-harv} 
+	\bibliography{julienTI}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% Acknowledgments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Acknowlegdments}
+	Thanks to everyone who loves us and to all who don't
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\section*{Supplementary materials}
+
+
+\end{document}
+
+
+
+
+An individual when reproducing could not only varies its number of offspring but also the quality of the offsprings. The classic equation of reproductive value \eqref{eq:RV} consider only the number of offspring $m_x$. One possibility to include offspring quality is to consider the expected fitness of an individual considering that the genes of the individual are not only transmitted via its progeny but also that the progeny is trasmitting part of its genes. Because a non-selfing individual in a diploid population transmits half of its alleles to its offspring, the direct expected fitness benefit of an individual of age $x$ is simply half its reproductive value. However, its offspring is also transmitting identical-by-descent copies of half its alleles. Thus, this indirect fitness increment will be a quarter of its offspring reproductive value.
+We could then define the expected fitness $W_x$ as:
+\begin{equation}\label{eq:eW}
+\begin{split}
+W_x &= \frac{1}{2} \left( RV_x + \sum_{offspring=1}^{N} \frac{1}{2} \cdot RV_{offspring} \right) \\ \\
+& = \frac{1}{2} \left(RV_x + \frac{1}{2} RV_x \cdot RV_0 \right) \\ \\ 
+& = \frac{1}{2} \left( m_x + RV'_{x} \right) \cdot \left[1 + \frac{1}{2} RV_0 \right]
+\end{split}
+\end{equation}
+
+
+
+From first principles, natural selection should act to maximise the inclusive fitness of an organism \citep{Grafen2006,West2013}. As such, instead of thinking purely in term of fecundity and direct reproductive output, the approach developed here assumes that an individual will maximize its inclusive fitness -- that is, an individual will act to maximise the number of alleles that are replicas of its own within a population.
+
+We define $I_x$ as the inclusive fitness of an individual at age $x$ that does not terminally invest, and $I'_x$ as the inclusive fitness of an individual when terminally investing; terminal investment is beneficial when: 
+\begin{equation}\label{eq:tiine}
+I'_{x} > I_x
+\end{equation} 
+An individual can increase its inclusive fitness through direct reproduction or indirectly by increasing the fitness of relatives (kin selection). Consequently, if an individual increases the reproductive output of its kin during its terminal reproduction, this indirect inclusive fitness benefit should be considered when evaluating terminal investment.
+
+
+\subsection{Inclusive fitness without terminal investment, $I_x$}
+Because a non-selfing individual in a diploid population transmits half of its alleles to its offspring, the direct inclusive fitness benefit of an individual of age $x$ is simply half its reproductive value. However, identical-by-descent copies of its alleles are also transmitted by kin's offspring; this indirect fitness increment will be half its kin's reproductive value times its relatedness to its kin (we use Hamilton's \citeyearpar{Hamilton1964} definition of relatedness, which closely approximates the probability that a replica allele will be carried by a relative). We could express the inclusive fitness without terminal investment as follows:
+\begin{equation}\label{eq:Ikin}
+\begin{split}
+I_x& = W_{direct} + W_{indirect}\\ \\
+& = \frac{1}{2} \left( RV_x + \sum_{kin=1}^{N} r_{kin} \cdot RV_{kin} \right)
+\end{split}
+\end{equation}
+in which $r_{kin}$ is the relatedness between the focal individual and its kin, and $N$ is the total number of kin affected by the actions of the focal individual.
+
+
+\subsection{Reproductive value}
+We used the definition of reproductive value by \cite{Williams_Natural_1966}.
+\begin{equation*}\label{eq:RVrev}
+RV_x = m_x + \sum_{t= x + 1}^{\infty} \frac{l_t}{l_x} \cdot m_t \tag{\ref{eq:RV}, revisited}
+\end{equation*}
+The reproductive value of an individual at birth is defined by $RV_{0}$. It is important to note that an individual may not be able to reproduce before a given age, in which case $m_{t}=0$ until that age is reached.
+%\begin{equation}\label{eq:RP}
+%RV_{0} = \sum_{t = 0}^{\infty} \frac{l_t}{l_{0}} \cdot m_t
+%\end{equation}
+
+\subsection{The model}
+Here, to start and to keep things simple, we will  consider only the direct parental effect on its offspring and no effect on other related kin. Therefore, the relatedness is 0.5, the reproductive value of the offspring could be expressed as $RV_0$, and the number of offspring produce is $RV_x$. We could thus rewrite:
+\begin{equation}\label{eq:Ix}
+\begin{split}
+I_x& = \frac{1}{2} \left(RV_x + \frac{1}{2} RV_x \cdot RV_0 \right) \\ \\ 
+& = \frac{1}{2} \left( m_x + RV'_{x} \right) \cdot \left[1 + \frac{1}{2} RV_0 \right] \\ \\
+\end{split}
+\end{equation}
+
+Let us define $\Delta m_{x}$ and $\Delta RV_{0}$ to be the increase in an individual's fecundity and its offspring's reproductive value at age zero, respectively, due to terminal investment at age $x$. In this case, an individual's inclusive fitness given terminal investment ($I'_{x}$) will not include future reproductions because $RV'_{x}=0$ when terminally investing. Again, an increase in current reproduction will be modelled with $\Delta m_{x}$. Likewise, in addition to producing more offspring, an individual may terminally invest by increasing the reproductive value (e.g., survival) of its offspring; to model this, we use $\Delta RV_{0}$, which is added to $RV_{0}$.  We could then write:
+\begin{equation}\label{eq:Iti}
+I'_{x} = \frac{1}{2} \left( m_x + \Delta m_{x} \right) \cdot \left[1 + \frac{1}{2} \left( RV_0 + \Delta RV_0 \right) \right] \\ \\
+\end{equation} 
+
+By substituting \eqref{eq:Ix} and \eqref{eq:Iti} in \eqref{eq:tiine}, we thus have terminal investment when,
+\begin{equation}\label{eq:tinew}
+\begin{split}
+\frac{1}{2} \left( m_x + \Delta m_{x} \right) \cdot \left[1 + \frac{1}{2} \left( RV_0 + \Delta RV_0 \right) \right] &> \frac{1}{2} \left( m_x + RV'_{x} \right) \cdot \left(1 + \frac{1}{2} RV_0 \right)
+\\ \\
+\frac{1}{2}m_x \cdot \Delta RV_{0} + \Delta m_{x} \left[1 + \frac{1}{2} \left( RV_0 + \Delta RV_0 \right) \right] &> RV'_{x} \left(1 + \frac{1}{2} RV_0 \right) 
+\end{split}
+\end{equation} 
+The above inequality is, unfortunately, not terribly elegant, but it is intuitively satisfying upon close examination. The first term on the left hand side of the inequality shows the inclusive fitness contribution from terminal investment on the baseline offspring production (i.e., for offspring that do not exist only because of the terminal investment, but would have anyway for an individual of age $x$). This inclusive fitness contribution includes the baseline offspring number itself ($m_{x}$), with an added increment of inclusive fitness caused by an increase in the reproductive value of those offspring ($\Delta RV_{0}$), multiplied by the parent-offspring relation ($\frac{1}{2}$). The second term on the left hand side of the inequality shows the inclusive fitness contribution from the additional offspring produced through terminal investment ($\Delta m_{x}$). This contribution comes from the offspring themselves, plus the full reproductive value of those offspring ($RV_{0} + \Delta RV_{0}$). The reason the full reproductive value is added, instead of just $\Delta RV_{0}$ is because the inclusive fitness increment from terminal investment includes all of the reproductive value of these new individuals, not just the added increment to already existing individuals. There is an elegant way to consider just terminal investment in offspring production or offspring reproductive value (see below).
+
+However before doing so, we can also rearrange inequality \eqref{eq:tinew} on terminal investment into its direct and indirect fitness components.
+\begin{equation} \label{eq:tiw}
+\def\tallest{\vphantom{\frac{RV_x}{1}}}
+\underbrace {\Delta m_{x}\tallest }_{W_{direct}} + 
+\underbrace{ \frac{1}{2} m_x \Delta RV_{0} +
+\frac{1}{2} \Delta m_{x} \left( RV_0 + \Delta RV_0 \right) }_{W_{indirect}}  >
+\def\tallest{\vphantom{\frac{RV_x}{1}}}
+\underbrace{ RV'_{x}\tallest }_{W_{direct}} +
+\underbrace{ \frac{1}{2} RV'_{x} \cdot RV_0}_{W_{indirect}} 
+\end{equation}
+
+\begin{equation} \label{eq:tiws}
+\def\tallest{\vphantom{\frac{RV_x}{1}}}
+\underbrace{ \frac{1}{2} \left[ RV_0 \left( \Delta m_x - RV'_{x} \right) + \Delta RV_{0} \left(m_x + \Delta m_{x}\right)\right]}_{W_{indirect}} >
+\underbrace { RV'_{x} - \Delta m_{x} \tallest }_{W_{direct}}
+\end{equation}
+
+Now, we can try to reorganise the equation by multiplying all terms by 2 and bring them all on the left side of the inequality.
+\begin{equation} \label{eq:tiwss}
+\begin{split}
+RV_0 \left( \Delta m_x - RV'_{x} \right) + \Delta RV_{0} \left(m_x + \Delta m_{x}\right) - 2 \left(RV'_{x} - \Delta m_{x}
+\right)
+& > 0
+\\ \\
+\left( \Delta m_x - RV'_{x} \right) \left( 2 + RV_0 \right) + \Delta RV_{0} \left(m_x + \Delta m_{x}\right)
+& > 0
+\end{split}
+\end{equation}
+
+Now, if we divide the previous equation by $(2 + RV_0)$ and rearrange the terms, we obtain the much more elegant inequality predicting terminal investment:
+\begin{equation} \label{eq:tiwid}
+\Delta m_x  + \frac{ \Delta RV_{0} \left(m_x + \Delta m_{x}\right)}{ 2 + RV_0 }
+> RV'_{x}
+\end{equation}
+Terminal investment is beneficial when the in direct fitness plus the weighted gain in indirect fitness is higher than the residual reproductive value.
+
+\subsection{Only TI effect on reproductive potential}
+Considering a terminal investment on reproductive potential by itself makes inequality \ref{eq:tinew} much more elegant. If we consider that terminal investment has no impact on the individual fecundity but has one only on its offspring reproductive potential (\textit{i.e.} $\Delta m_{x}=0$), we obtain the following inequality predicting when an individual should terminally invest:
+\begin{equation*}
+\frac { m_x \cdot \Delta RV_{0} }{ 2 + RV_0 } > RV'_{x} 
+\end{equation*}
+Now only one term exists on the left hand side of the inequality, and the inclusive fitness increment from terminal investment is simply the number of offspring produced by an individual ($m_{x}$) plus the extra reproductive potential over all offspring ($m_{x} \times \Delta RV_{0}$) multiplied by one half for parent-offspring relatedness.
+
+\subsection{Only TI effect on fecundity}
+Considering a terminal investment on fecundity by itself makes inequality \ref{eq:Iti} much more elegant too. If we consider that terminal investment has an impact only on the individual fecundity but not on its offspring reproductive potential (\textit{i.e.} $\Delta RV_{0}=0$), we obtain the classic terminal invest result that an individual should terminally invest when
+\begin{equation*}
+\Delta m_{x} > RV'_{x} \tag{\ref{eq:tic}, revisited} \\ \\
+\end{equation*}
+
+\subsection{Let us think a bit more about the change in offspring reproductive potential with terminal investment}
+The reproductive potential is defined as the reproductive value at age 0, $RV_0$. If writing the effect of terminal investment on the reproductive potential of offspring as $\Delta RV_{0}$, was useful in the previous equations, it is not really clear which parameters of the reproductive potential are affected by the terminal investment. To investigate which parameters of the reproductive potential could be affected by the terminal investment we should have a look at the equation of the reproductive potential: 
+\begin{equation}
+\begin{split}
+RV_0 &= \sum_{t= 0}^{\infty} \frac{l_t}{l_0} \cdot m_t \\
+&= l_{AFR} \sum_{t = AFR}^{\infty} \frac{l_{t}}{l_{AFR}} \cdot m_{t}
+\end{split}
+\end{equation}
+
+where $l_0$ is equal to 1, $m_t$ is equal to zero before the first reproduction and $AFR$ stands for age at first reproduction.
+So anything that will increase the survival to first reproduction, increase the age specific survival as an adult or increase the fecundity would lead to an increase in reproductive potential. In addition, given the equation I think it is ok to say that $l_{AFR}$ is the parameter with the lowest elasticity (\textit{i.e.} small variation leading to the largest increase in $RV_0$).
+
+
+\section{Initial conclusion}
+Terminal investment could be done by increasing fecundity, reproductive potential of offsrping (\textit{e.g.} via their survival) or both. The implication is that a decrease in fecundity could be compensated by an increase in RP.
+
+Could be extended to include more relatives and should be discussed that way too.
+
+\section{generalisation}
+Not sure it will be really useful but I keep it in the document for the moment.
+\begin{equation}\label{eq:Ig}
+I = \frac{1}{2} \left( m_x + RV'_x + \sum_{kin=1}^{N} r_{kin} RV_{kin} \right)
+\end{equation}
+\begin{equation}\label{eq:I'g}
+I' = \frac{1}{2} \left[ m_x + \Delta m_x + \sum_{kin=1}^{N} r_{kin} \left(RV_{kin} + \Delta RV_{kin} \right) \right]
+\end{equation}
+\begin{equation}\label{eq:tig1}
+m_x + \Delta m_x + \sum_{kin=1}^{N_1} r_{kin} \left(RV_{kin} + \Delta RV_{kin} \right)
+>
+m_x + RV'_x + \sum_{kin=1}^{N_2} r_{kin} RV_{kin}
+\end{equation}
+
+\begin{equation}\label{eq:tig2}
+m_x + \Delta m_x + \sum_{kin=1}^{N_1} r_{kin} \left(RV_{kin} + \Delta RV_{kin} \right)
+>
+m_x + RV'_x + \sum_{kin=1}^{N_2} r_{kin} RV_{kin}
+\end{equation}
+
+
+
+
