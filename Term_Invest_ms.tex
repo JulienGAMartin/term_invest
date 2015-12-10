@@ -81,7 +81,7 @@ If $k_x$ is unaffected by terminal investment, then the prediction for terminal 
 m_x \cdot \Delta k_{x} + \Delta m_{x} \cdot k_x + \Delta m_{x} \cdot \Delta k_{x} &> \sum_{t= x + 1}^{\infty} \frac{l_t}{l_x} \cdot m_t \cdot k_t
 \end{split}
 \end{equation}
-In inequality \ref{eq:wxti}, $\Delta m_{x}$ and $\Delta k_{x}$ are the increases in fecundity and juvenile survivorship to maturity due to terminal investment, respectively. If this estimation of expected fitness provides interesting new insights about terminal investment, we feel that that it is still too restrictive since it assumes that an effect only on survival of the offspring and not on their reproduction potential.
+In inequality \ref{eq:wxti}, $\Delta m_{x}$ and $\Delta k_{x}$ are the increases in fecundity and juvenile survivorship to maturity due to terminal investment, respectively. If this estimation of expected fitness provides interesting new insights about terminal investment, we believe that it is still too restrictive since it assumes that an effect only on survival of the offspring and not on their reproduction potential.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +113,7 @@ Let us define $\Delta m_{x}$ and $\Delta RV_{0}$ to be the increase in an indivi
 	I'_{x} = \frac{1}{2} \left( m_x + \Delta m_{x} \right) \cdot \left[1 + \frac{1}{2} \left( RV_0 + \Delta RV_0 \right) \right] \\ \\
 \end{equation} 
 
-By substituting \eqref{eq:Ix} and \eqref{eq:Iti} in \eqref{eq:tiine}, we thus have terminal investment when,
+By comparing equations \eqref{eq:Ix} and \eqref{eq:Iti}, we thus have terminal investment when,
 \begin{equation}\label{eq:tinew}
 	\begin{split}
 		\frac{1}{2} \left( m_x + \Delta m_{x} \right) \cdot \left[1 + \frac{1}{2} \left( RV_0 + \Delta RV_0 \right) \right] &> \frac{1}{2} \left( m_x + RV'_{x} \right) \cdot \left(1 + \frac{1}{2} RV_0 \right)
@@ -227,7 +227,7 @@ I'_{x} > I_x
 \end{equation} 
 An individual can increase its inclusive fitness through direct reproduction or indirectly by increasing the fitness of relatives (kin selection). Consequently, if an individual increases the reproductive output of its kin during its terminal reproduction, this indirect inclusive fitness benefit should be considered when evaluating terminal investment.
 
-
+% XXX BD XXX: Would it make sense to substitute I with W here, indicating fitness instead of inclusive fitness per se? We could just as easily separate into direct and indirect components of fitness, as done below.
 \subsection{Inclusive fitness without terminal investment, $I_x$}
 Because a non-selfing individual in a diploid population transmits half of its alleles to its offspring, the direct inclusive fitness benefit of an individual of age $x$ is simply half its reproductive value. However, identical-by-descent copies of its alleles are also transmitted by kin's offspring; this indirect fitness increment will be half its kin's reproductive value times its relatedness to its kin (we use Hamilton's \citeyearpar{Hamilton1964} definition of relatedness, which closely approximates the probability that a replica allele will be carried by a relative). We could express the inclusive fitness without terminal investment as follows:
 \begin{equation}\label{eq:Ikin}
@@ -271,7 +271,7 @@ By substituting \eqref{eq:Ix} and \eqref{eq:Iti} in \eqref{eq:tiine}, we thus ha
 \frac{1}{2}m_x \cdot \Delta RV_{0} + \Delta m_{x} \left[1 + \frac{1}{2} \left( RV_0 + \Delta RV_0 \right) \right] &> RV'_{x} \left(1 + \frac{1}{2} RV_0 \right) 
 \end{split}
 \end{equation} 
-The above inequality is, unfortunately, not terribly elegant, but it is intuitively satisfying upon close examination. The first term on the left hand side of the inequality shows the inclusive fitness contribution from terminal investment on the baseline offspring production (i.e., for offspring that do not exist only because of the terminal investment, but would have anyway for an individual of age $x$). This inclusive fitness contribution includes the baseline offspring number itself ($m_{x}$), with an added increment of inclusive fitness caused by an increase in the reproductive value of those offspring ($\Delta RV_{0}$), multiplied by the parent-offspring relation ($\frac{1}{2}$). The second term on the left hand side of the inequality shows the inclusive fitness contribution from the additional offspring produced through terminal investment ($\Delta m_{x}$). This contribution comes from the offspring themselves, plus the full reproductive value of those offspring ($RV_{0} + \Delta RV_{0}$). The reason the full reproductive value is added, instead of just $\Delta RV_{0}$ is because the inclusive fitness increment from terminal investment includes all of the reproductive value of these new individuals, not just the added increment to already existing individuals. There is an elegant way to consider just terminal investment in offspring production or offspring reproductive value (see below).
+The above inequality is, unfortunately, not terribly elegant, but it is intuitively satisfying upon close examination. The first term on the left hand side of the inequality shows the inclusive fitness contribution from terminal investment on the baseline offspring production (i.e., for offspring that would have anyway for an individual of age $x$, even without terminal investment). This inclusive fitness contribution thereby includes the baseline offspring number itself ($m_{x}$), with an added increment of inclusive fitness caused by an increase in the reproductive value of those offspring ($\Delta RV_{0}$), multiplied by the parent-offspring relation ($\frac{1}{2}$). The second term on the left hand side of the inequality shows the inclusive fitness contribution from the additional offspring produced through terminal investment ($\Delta m_{x}$). This contribution comes from the offspring themselves, plus the full reproductive value of those offspring ($RV_{0} + \Delta RV_{0}$). The reason the full reproductive value is added, instead of just $\Delta RV_{0}$ is because the inclusive fitness increment from terminal investment includes all of the reproductive value of these new individuals, not just the added increment to already existing individuals. There is an elegant way to consider just terminal investment in offspring production or offspring reproductive value (see below).
 
 However before doing so, we can also rearrange inequality \eqref{eq:tinew} on terminal investment into its direct and indirect fitness components.
 \begin{equation} \label{eq:tiw}
