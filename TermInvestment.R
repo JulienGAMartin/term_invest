@@ -16,6 +16,8 @@
 # Five different types of functions will be considered: Note that the FUNCTION.Cu ones look weird, but what this does is return the cumulative probability of surviving to age x given any entered ages (i.e., you can enter a vector of ages, or just one age, and get the cumulative survival probaiblity of each). It does this by first expanding so that the cumulative probability is calculated for 1 to the maximum age entered, but then returns only the ages asked for.
 # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 
+# XXX TODO: Scale terminal investment. Scale maximum fecundity to one if you live to 20. Want terminal investment to be a percentage of age-specific fecundity. E.g., double the amount of offspring produced at age x to terminally invest. Will look at zero to 100% (essentially double). Can do the same for RV0 -- go from zero to 100%.
+
 #-------------------------------------------------------------------------
 # Plotting program -- makes a 3d plot from information calculated later
 #-------------------------------------------------------------------------
@@ -39,12 +41,13 @@ TIplot <- function(dat,xax,yax){
 			}
 		}
 		scatterplot3d(x=Titable[,1],y=Titable[,2],z=Titable[,3],
-			pch=16,cex.symbols=1.0,zlim=c(0,20),
+			pch=16,cex.symbols=1.0,zlim=c(0,20),xlim=c(xax[1],xax[length(xax)]),
+            ylim=c(yax[1],yax[length(yax)]),
 			xlab=expression(paste("TI in fecundity (",Delta,m[x],")")),
 			ylab=expression(paste("TI in offspring reproductive value (",Delta,RV[0],")")),
 			zlab="Age",color="black",y.margin.add=0.5,cex.lab=1.25);
 	}else{
-		scatterplot3d(x=0,y=0,z=0,type="n",xlim=c(0,2),ylim=c(0,1),
+		scatterplot3d(x=0,y=0,z=0,type="n",xlim=c(0,1),ylim=c(0,1),
 			pch=16,cex.symbols=1.0,zlim=c(0,20),
 			xlab=expression(paste("TI in fecundity (",Delta,m[x],")")),
 			ylab=expression(paste("TI in offspring reproductive value (",Delta,RV[0],")")),
@@ -454,9 +457,9 @@ SurFun <- constantP.Cu.lo;
 # -----------------------------------------------------------------------
 # Function plot the space of terminal investment (requires lhs() and TIplot() [above]).
 # yr: How many years to consider.
-# yF: Shows maximum plotted for increase in fecundity.
+# yF: Shows maximum plotted (percentage) for increase in fecundity (default 100).
 # yR: Shows maximum plotted for increase in offspring reproductive value.
-TIspace <- function(FecFun,SurFun,yr=20,yF=2,yR=1){
+TIspace <- function(FecFun,SurFun,yr=20,yF=1,yR=1){
 	resvals <- rep(x=0, times=yr+1);
 	termi   <- 10000;
 	for(i in 1:(yr+1)){
@@ -468,11 +471,11 @@ TIspace <- function(FecFun,SurFun,yr=20,yF=2,yR=1){
 	for(age in 1:dim(Space)[3]){
 		for(i in 1:dim(Space)[1]){
 			for(j in 1:dim(Space)[2]){
-				CHECK <- lhs( Dmx  =  Fpar[i],       # TI in fecundity 
-						      DRV0 =  Rpar[j],       # TI in RV of offspring
-						      mx   =  FecFun(age),   # Age fecundity
-						      RV0  =  resvals[1],    # Offspring RV 
-						      RVx  =  resvals[age+1] # RV at age x
+				CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),       # TI in fecundity 
+						      DRV0 =  Rpar[j],                   # TI in RV of offspring
+						      mx   =  FecFun(age),               # Age fecundity
+						      RV0  =  resvals[1],                # Offspring RV 
+						      RVx  =  resvals[age+1]             # RV at age x
 						);			
 				Space[i,j,age] <- CHECK;
 			}
@@ -499,7 +502,7 @@ TIspace <- function(FecFun,SurFun,yr=20,yF=2,yR=1){
 #		UshF.Pr.hi						\	UshP.Cu.hi		
 #       ----------------------------------------------------------------------
 
-Space <- TIspace(humpedshF.Pr.lo, SurFun=humpedshP.Cu.lo);
+Space <- TIspace(humpedshF.Pr.lo, SurFun=constantP.Cu.lo);
 
 # ----------------------------------------------------------------------------
 
