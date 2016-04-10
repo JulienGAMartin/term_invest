@@ -1,0 +1,308 @@
+---
+title: "Guided notes and code for terminal investment"
+author: "Brad Duthie"
+date: "10 April 2016"
+output: html_document
+---
+
+Starting summary
+================================================
+
+Here are some essential notes and R code toward the goal of producing a complete manuscript on terminal investment. This includes the most important bits of the TerminalInvestment.R (minus some of the early plots that showed survival and fecundity curves -- these are echoed out). The last major change made to the R file was to make terminal investment in fecundity proportional to age (edited 10 DEC 2015).
+
+R code summary
+-----------------------------------------------
+
+First we define all of the survival and fecundity functions. These include 1) constant, 2) increasing, 3) decreasing, 4) hump-shaped, and 5) u-shaped functions of age. Each function has a low and a high. We start with functions in which survival and fecundity do not change with age.
+
+```{r}
+# Low fecundities and survival probabilities:
+constantF.Pr.lo <- function(age) rep(2,length(age)); # Fecundity at age
+constantP.Pr.lo <- function(age) rep(0.2,length(age)); # Probability of survival age
+constantP.Cu.lo <- function(age){ # Cumulative probability of surviving to age.
+	all    <- 1:max(age);
+	ret    <- rep(0,length(all));
+	tot    <- 1; # Probability of being at age zero (must be one, starting point).
+	for(i in 1:length(all)){
+		ret[i] <- tot * constantP.Pr.lo(i);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+# High fecundities and survival probabilities:
+constantF.Pr.hi <- function(age) rep(8,length(age)); # Fecundity at age
+constantP.Pr.hi <- function(age) rep(0.8,length(age)); # Probability of survival age
+constantP.Cu.hi <- function(age){ # Cumulative probability of surviving to age.
+	all    <- 1:max(age);
+	ret    <- rep(0,length(all));
+	tot    <- 1; # Probability of being at age zero (must be one, starting point).
+	for(i in 1:length(all)){
+		ret[i] <- tot * constantP.Pr.hi(i);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+```
+
+Next, we have the functions in which survival and fecundity increase with increasing age. To avoid creating a divergent series, increases are not linear, but asymptote to some value as $m \to \infty$. Survival probability plateaus at ca 0.692 and 0.99 for low and high probability, respectively.
+
+```{r}
+# Low fecundities and survival probabilities:
+exponeupF.Pr.lo <- function(age){
+	ret <- rep(0,length(age));
+	tot <- 0;	
+	for(i in 1:length(age)){
+		ret[i] <- 1 * sum(1/((5/4)^((1:i)-1))) - 1;
+	}
+	return(ret);
+}
+exponeupP.Pr.lo <- function(age) {
+	ret <- rep(0,length(age));
+	tot <- 0;
+	for(i in 1:length(age)){
+		ret[i] <- (198/1000) * sum(1/((4/3)^((1:age[i])-1))) - 0.1;
+	}
+	return(ret);
+}
+exponeupP.Cu.lo <- function(age){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * exponeupP.Pr.lo(i);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+# High fecundities and survival probabilities:
+exponeupF.Pr.hi <- function(age){
+	ret <- rep(0,length(age));
+	tot <- 0;	
+	for(i in 1:length(age)){
+		ret[i] <- 2 * sum(1/((10/9)^((1:i)-1)))
+	}
+	return(ret);
+}
+
+exponeupP.Pr.hi <- function(age) {
+	ret <- rep(0,length(age));
+	tot <- 0;
+	for(i in 1:length(age)){
+		ret[i] <- (198/1000) * sum(1/((5/4)^((1:age[i])-1)))
+	}
+	return(ret);
+}
+
+exponeupP.Cu.hi <- function(age){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * exponeupP.Pr.hi(i);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+```
+
+Next, we have the functions in which survival and fecundity increase with increasing age. As with the increasing functions above, decreasing survival and fecundity are also not linear, but decay exponentially to some positive real value.
+
+```{r}
+# Low fecundities and survival probabilities:
+exponednF.Pr.lo <- function(age){
+	ret <- rep(0,length(age));
+	for(i in 1:length(age)){
+		ret[i] <- (15) * exp(-(10/40)*age[i]);
+	}
+	return(ret);
+}
+exponednP.Pr.lo <- function(age){
+	ret <- rep(0,length(age));
+	for(i in 1:length(age)){
+		ret[i] <- (0.5) * exp(-(10/40)*age[i]);
+	}
+	return(ret);
+}
+exponednP.Cu.lo <- function(age){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * exponednP.Pr.lo(i);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+# High fecundities and survival probabilities:
+exponednF.Pr.hi <- function(age){
+	ret <- rep(0,length(age));
+	for(i in 1:length(age)){
+		ret[i] <- (30) * exp(-(5/40)*age[i]);
+	}
+	return(ret);
+}
+exponednP.Pr.hi <- function(age){
+	ret <- rep(0,length(age));
+	for(i in 1:length(age)){
+		ret[i] <- (1) * exp(-(5/40)*age[i]);
+	}
+	return(ret);
+}
+exponednP.Cu.hi <- function(age){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * exponednP.Pr.hi(i);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+
+```
+
+Next, we have hump-shaped survival probabilities and fecundities, in which some maximum value occurs in the middle of life, with lower values for low and high ages.
+
+```{r}
+# Low fecundities and survival probabilities:
+humpedshF.Pr.lo <- function(age,sd=5) 10 * (1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+humpedshP.Pr.lo <- function(age,sd=5) (1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+humpedshP.Cu.lo <- function(age,sd=5){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * humpedshP.Pr.lo(i,sd);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+# High fecundities and survival probabilities:
+humpedshF.Pr.hi <- function(age,sd=5) 20 * (1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+humpedshP.Pr.hi <- function(age,sd=5) 2 * (1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+humpedshP.Cu.hi <- function(age,sd=5){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * humpedshP.Pr.hi(i,sd);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+```
+
+Lastly, we consider u-shaped survival probabilities and fecundities, in which a minimum value occurs in the middle of life, with higher values for low and high ages. 
+
+```{r}
+# Low fecundities and survival probabilities:
+UshF.Pr.lo <- function(age,sd=5) 10 - 18*(1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+UshP.Pr.lo <- function(age,sd=5) 0.6 - (1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+UshP.Cu.lo <- function(age,sd=5){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * UshP.Pr.lo(i,sd);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+# High fecundities and survival probabilities:
+UshF.Pr.hi <- function(age,sd=5) 15 - 18*(1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+UshP.Pr.hi <- function(age,sd=5) 1 - (1/sd*sqrt(2*pi))*exp(-1*((age - 10)^2/(2*sd*sd)));
+UshP.Cu.hi <- function(age,sd=5){
+	all <- 1:max(age);
+	ret <- rep(0,length(all));
+	tot <- 1;	
+	for(i in 1:length(all)){
+		ret[i] <- tot * UshP.Pr.hi(i,sd);
+		tot    <- ret[i];
+	}
+	return(ret[age]);
+}
+```
+
+Using the above survival and fecundity curves, we can predict terminal investment using the equation derived from our modelling work,
+
+$$	\Delta m_x  + \frac{ \Delta RV_{0} \left(m_x + \Delta m_{x}\right)}{ 2 + RV_0 } > RV'_{x} $$
+
+In the above, $m_{x}$ is fecundity at age $x$, while $\Delta m_{x}$ is the gain in fecundity from terminally investing in age $x$. Similarly, $RV_{0}$ is the reproductive value of offspring, and $\Delta RV_{0}$ is the increase in the reproductive value of offspring after termainal investment. The term $RV'_{x}$ is the residual reproductive value of an individual that does not terminally invest. Hence, terminal investment increases fitness if the left-hand side of the above equation is greater than the residual reproductive value of a female. To analyse our model, we define the equivalent function in R below.
+
+```{r}
+lhs <- function(Dmx, DRV0, mx, RV0, RVx){
+	ti <- Dmx + (DRV0 * (mx + Dmx)) / (2 + RV0);
+	if(ti > RVx){
+		return(1);
+	}else{
+		return(0);
+	}
+}
+```
+
+The above R function thereby returns a $1$ if terminal investment increases fitness, and a $0$ if it does not. The inputs of this function include `Dmx = `$\Delta m_{x}$, `DRV0 = `$\Delta RV_{0}$, `mx =` $m_{x}$, `RV0 = `$RV_{0}$, and `RVx = `$RV'_{x}$. We will now use it, along with the above defined functions of survival and fecundity, to predict terminal investment. The code below is a function to predict terminal investment across a range of ages (considers 1 through `yr`) and for different functions of fecundity and survival. In the below, `yF` represents the maximum percentage that we might reasonably consider fecundity could increase for a particular age -- below we assume a maximum possible terminal investment of 100 percent of the age-specific fecundity. Similarly, `yR` represents the maximum possible increase in offspring reproductive value (which should not change with the age of the parent) -- below we assume that parents might be able to increase the RV of their offspring by no more than 100 percent.
+
+```{r}
+TIspace <- function(FecFun,SurFun,yr=20,yF=1,yR=1){
+	resvals <- rep(x=0, times=yr+1);
+	termi   <- 1000;
+	for(i in 1:(yr+1)){
+		resvals[i] <- sum((SurFun(i:termi)/SurFun(i))*FecFun(i:termi));
+	}
+	Fpar  <- seq(from=0, to=yF, length.out=100);
+	Rpar  <- seq(from=0, to=yR, length.out=100);
+	Space <- array(data=0,dim=c(100,100,yr));
+	for(age in 1:dim(Space)[3]){
+		for(i in 1:dim(Space)[1]){
+			for(j in 1:dim(Space)[2]){
+				CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),   # TI in fecundity 
+						      DRV0 =  Rpar[j],                   # TI in RV of offspring
+						      mx   =  FecFun(age),               # Age fecundity
+						      RV0  =  resvals[1],                # Offspring RV 
+						      RVx  =  resvals[age+1]             # RV at age x
+						);			
+				Space[i,j,age] <- CHECK;
+			}
+		}
+	}
+	return(Space);
+}
+```
+
+Below we can create a list of all the fecundity functions `Ffun` and all the survival functions `Sfun`.
+
+```{r}
+Ffun  <- list(constantF.Pr.lo, constantF.Pr.hi, exponeupF.Pr.lo, exponeupF.Pr.hi,
+              exponednF.Pr.lo, exponednF.Pr.hi, humpedshF.Pr.lo, humpedshF.Pr.hi,
+              UshF.Pr.lo, UshF.Pr.hi);
+Sfun  <- list(constantP.Cu.lo, constantP.Cu.hi, exponeupP.Cu.lo, exponeupP.Cu.hi,
+              exponednP.Cu.lo, exponednP.Cu.hi, humpedshP.Cu.lo, humpedshP.Cu.hi,
+              UshP.Cu.lo, UshP.Cu.hi);
+Ffunl <-    c("constantF.Pr.lo", "constantF.Pr.hi", "exponeupF.Pr.lo", "exponeupF.Pr.hi",
+              "exponednF.Pr.lo", "exponednF.Pr.hi", "humpedshF.Pr.lo", "humpedshF.Pr.hi",
+              "UshF.Pr.lo", "UshF.Pr.hi");
+Sfunl <-    c("constantP.Cu.lo", "constantP.Cu.hi", "exponeupP.Cu.lo", "exponeupP.Cu.hi",
+              "exponednP.Cu.lo", "exponednP.Cu.hi", "humpedshP.Cu.lo", "humpedshP.Cu.hi",
+              "UshP.Cu.lo", "UshP.Cu.hi");
+```
+
+We can then loop through these lists to find where terminal investment is predicted.
+
+```{r}
+rmat <- NULL;
+for(i in 1:length(Ffun)){ 
+  for(j in 1:length(Sfun)){
+    chk  <- TIspace(FecFun=Ffun[[i]], SurFun=Sfun[[j]]);
+    tot  <- sum(chk);
+    res  <- c(Ffunl[i], Sfunl[j], tot);
+    rmat <- rbind(rmat,res);
+  }
+}
+colnames(rmat) <- c("Fecundity", "Survival", "TI sum");
+ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
+print(rmat[ord,]);
+```
+
+The above table is ordered by the size of the parameter space explored in which terminal investment is predicted (third column). Terminal investment occurs in `r round(sum(rmat[,3]>0)/dim(rmat)[1],digits=2)` proportion of simulated conditions, overall.
+
+
