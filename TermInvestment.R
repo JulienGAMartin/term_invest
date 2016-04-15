@@ -546,28 +546,25 @@ for(i in 1:(dim(SP)[1])){
 
 persp(x = HI, theta = 45, phi = 30, r = 50,xlim=c(0,1),ylim=c(0,1),zlim=c(0,20));
 
-
-library(plot3D);
-library(animation); 
-
-
-
-surf3D(
-
-
-
-xx <- seq(from=0, to=2, length.out=100);
-yy <- seq(from=0, to=1, length.out=100);
-
-
-TIplot(dat=SP,xax=xx,yax=yy);
-
-
-isosurf3Drgl(x=HI, colkey = FALSE, shade = 0.5,
-        box = FALSE, theta = 60)
-
-
-
+# 
+# library(plot3D);
+# library(animation); 
+# 
+# 
+# 
+# surf3D(
+# 
+# 
+# 
+# xx <- seq(from=0, to=2, length.out=100);
+# yy <- seq(from=0, to=1, length.out=100);
+# 
+# 
+# TIplot(dat=SP,xax=xx,yax=yy);
+# 
+# 
+# isosurf3Drgl(x=HI, colkey = FALSE, shade = 0.5,
+#         box = FALSE, theta = 60)
 
 
 #-------------------------------------------------------------------------
@@ -723,16 +720,179 @@ mtext(expression(paste("Survival probability")),
 dev.off();
 
 
+#-------------------------------------------------------------------------
+# BD modified old code for making individual 3D plots
+#-------------------------------------------------------------------------
 
 
+# -----------------------------------------------------------------------
+# Function plot the space of terminal investment (requires lhs() and TIplot() [above]).
+# yr: How many years to consider.
+# yF: Shows maximum plotted for increase in fecundity.
+# yR: Shows maximum plotted for increase in offspring reproductive value.
+TIspace <- function(FecFun,SurFun,PrDead=0.99){
+    yr       <- sum(SurFun(1:1000)>(1-PrDead)) + 1;
+    resvals1 <- rep(x=0, times=yr+1);
+    resvals2 <- rep(x=0, times=yr+1);
+    termi    <- 10000;
+    RVal     <- sum((SurFun(1:termi))*FecFun(1:termi));
+    for(i in 1:(yr+1)){
+        # Reproductive value is resvals1:
+        resvals1[i] <- sum((SurFun((i+0):termi)/SurFun(i))*FecFun((i+0):termi));
+        # Residual reproductive value is resvals2:
+        resvals2[i] <- sum((SurFun((i+1):termi)/SurFun(i))*FecFun((i+1):termi));
+    }
+    Fpar  <- seq(from=0, to=RVal, length.out=100);   # From 0 to 100% TI lifetime fec.
+    Rpar  <- seq(from=0, to=RVal, length.out=100);   # From 0 to 100% TI offspring RV.
+    Space <- array(data=0,dim=c(100,100,yr));
+    for(age in 1:dim(Space)[3]){
+        for(i in 1:dim(Space)[1]){
+            for(j in 1:dim(Space)[2]){
+                CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),  # TI in fecundity 
+                              DRV0 =  Rpar[j],              # TI in RV of offspring
+                              mx   =  FecFun(age),          # Age fecundity
+                              RV0  =  resvals1[1],          # Offspring RV 
+                              RVx  =  resvals2[age]         # RV at age x
+                );			
+                Space[i,j,age] <- CHECK;
+            }
+        }
+        print(age);
+    }
+    x <- seq(from=0,to=1,length=100);
+    y <- seq(from=0,to=1,length=100);
+    return(list(x,y,yr,Space)); # XXX modified output to use isosurf3D function XXX
+}
+# -----------------------------------------------------------------------
+
+#loop to create all the plots
+fecFunNames <- c("Constant Low Fecundity",
+                 "Constant High Fecundity",
+                 "Exponentially Increasing Low Fecundity",	
+                 "Exponentially Increasing High Fecundity",	
+                 "Exponentially Decreasing Low Fecundity",
+                 "Exponentially Decreasing High Fecundity",	
+                 "Hump-shaped Low Fecundity",
+                 "Hump-shaped High Fecundity",
+                 "U-shaped Low Fecundity",
+                 "U-shaped High Fecundity")	
+surFunNames <- c("Constant Low Survival Pr.",
+                 "Constant High Survival Pr.",
+                 "Exponentially Increasing Low Survival Pr.",
+                 "Exponentially Increasing High Survival Pr.",
+                 "Exponentially Decreasing Low Survival Pr.",
+                 "Exponentially Decreasing High Survival Pr.",
+                 "Hump-shaped Low Survival Pr.",
+                 "Hump-shaped High Survival Pr.",
+                 "U-shaped Low Survival Pr.",
+                 "U-shaped High Survival Pr.")
+
+fecFunlist <- list(constantF.Pr.lo,
+                   constantF.Pr.hi,
+                   exponeupF.Pr.lo,	
+                   exponeupF.Pr.hi,	
+                   exponednF.Pr.lo,
+                   exponednF.Pr.hi,	
+                   humpedshF.Pr.lo,
+                   humpedshF.Pr.hi,
+                   UshF.Pr.lo,
+                   UshF.Pr.hi)	
+surFunlist <- c(constantP.Cu.lo,
+                constantP.Cu.hi,
+                exponeupP.Cu.lo,
+                exponeupP.Cu.hi,
+                exponednP.Cu.lo,
+                exponednP.Cu.hi,
+                humpedshP.Cu.lo,
+                humpedshP.Cu.hi,
+                UshP.Cu.lo,
+                UshP.Cu.hi)
+
+SFnPrlist <- c(constantP.Pr.lo,
+               constantP.Pr.hi,
+               exponeupP.Pr.lo,
+               exponeupP.Pr.hi,
+               exponednP.Pr.lo,
+               exponednP.Pr.hi,
+               humpedshP.Pr.lo,
+               humpedshP.Pr.hi,
+               UshP.Pr.lo,
+               UshP.Pr.hi)
 
 
+library(plot3D);
+
+# modify isosurf3D for what we want 
+isosurf <- function(Space,FFn="Fecundity Function",SFn="Survival Function",SFnPr=NA){
+    close.screen(all.screens=TRUE);
+    opar <- par();
+    #retrieve the fecundity function used by matching function name
+    fecFun <- fecFunlist[[match(FFn,fecFunNames)]];
+    #retrieve the survival function used by matching function name
+    surFun <- surFunlist[[match(SFn,surFunNames)]];
+    # matrix to split plotting screen
+    fig.mat <- matrix(c(0,0.66,0,1,0.66,1,0.5,1,0.66,1,0,0.5),ncol=4,byrow=TRUE);
+    par(split.screen(fig.mat)) # split the graph in 3
+    screen(1,new=TRUE) #plot on screen 1
+    par(mar=c(5,5,1,1));
+    if(sum(Space[[4]])==0){
+        plot(x=1:10,y=1:10,type="n",xaxt="n",yaxt="n",xlab="",ylab="");
+        text(x=5.5,y=5.5,"No TI predicted",cex=1);
+        titl <- paste(FFn,"\n",SFn)
+        text(x=5.5,y=8.5,titl,cex=1);
+        #return(NULL); removed since all the function should be evaluated
+    }else{
+        x <- Space[[1]] #added else argument for the function to work
+        y <- Space[[2]]
+        z <- (1:Space[[3]])
+        colvar=Space[[4]]
+        titl <- paste(FFn,"\n",SFn) # Commenting this out with main="" below.
+        pmat <- isosurf3D(x, y, z, colvar=colvar, main="", # <- change to add title.
+                          xlab="", ylab="", zlab="",ticktype="detailed", bty = "g",
+                          level=0.5, theta=30, cex.axis=0.6);
+        	text(trans3d(x=mean(c(min(x),max(x))), y=-0.2, z=min(z),pmat=pmat),
+        		lab=expression(paste("TI in fecundity (",Delta,m[x],")")),
+        		srt=-30,cex=1)	
+        	text(trans3d(1.2, mean(c(min(y),max(y))), min(z), pmat=pmat),
+        		lab=expression(paste("TI in offspring RV (",Delta,RV[0],")")),
+        		srt=65,cex=1)
+        	text(trans3d(-0.20, -0.1, mean(c(min(z),max(z))), pmat=pmat), lab="Age", srt=120, 
+        	     xpd=TRUE,cex=1.25);
+    }
+    screen(2,new=TRUE) #plot on screen 1
+    x <- 1:20
+    y <- fecFun(x)
+    plot(x=x,y=y,type="n",xlab="Age",ylab="Fecundity",lwd=2,ylim=c(0,30),
+         cex.lab=1,cex.axis=0.8, mgp=c(2,1,0));
+    polygon(x=c(x,rev(x)),y=c(rep(0,length(y)),rev(y)),col="grey80",lwd=1.5);
+    SfPrFun <- SFnPr;
+    screen(3,new=TRUE) #plot on screen 1
+    y <- SfPrFun(x)
+    plot(x=x,y=y,type="n",xlab="Age",ylab="Survival",lwd=2,ylim=c(0,1),
+         cex.axis=0.8, cex.lab=1, mgp=c(2,1,0));
+    polygon(x=c(x,rev(x)),y=c(rep(0,length(y)),rev(y)),col="grey80",lwd=1.5);
+    par <- opar
+}
 
 
+Space <- TIspace( FecFun = fecFunlist[[i]], SurFun   = surFunlist[[j]]);
+isosurf(Space,FFn=fecFunNames[i],SFn=surFunNames[j],SFnPr=SFnPrlist[[j]]);
 
+## Below prints everything (takes a long time);
 
+pdf(file=paste("Plots3Dsum.pdf",sep=""),onefile=TRUE);		
+for(i in 1:10){
+    print(fecFunNames[i]);
+    for(j in 1:10){
+        print(surFunNames[j]);
+        Space <- TIspace( FecFun   = fecFunlist[[i]], 
+                          SurFun   = surFunlist[[j]]
+        );
+        isosurf(Space,FFn=fecFunNames[i],SFn=surFunNames[j],SFnPr=SFnPrlist[[j]])
+    }
+}
 
-
+dev.off();
 
 
 
