@@ -471,7 +471,7 @@ TIspace <- function(FecFun,SurFun,yr=20,yF=1,yR=1){
 	for(age in 1:dim(Space)[3]){
 		for(i in 1:dim(Space)[1]){
 			for(j in 1:dim(Space)[2]){
-				CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),       # TI in fecundity 
+				CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),   # TI in fecundity 
 						      DRV0 =  Rpar[j],                   # TI in RV of offspring
 						      mx   =  FecFun(age),               # Age fecundity
 						      RV0  =  resvals[1],                # Offspring RV 
@@ -570,16 +570,157 @@ isosurf3Drgl(x=HI, colkey = FALSE, shade = 0.5,
 
 
 
+#-------------------------------------------------------------------------
+# BD code from the summary, and for making figures
+#-------------------------------------------------------------------------
+
+lhs <- function(Dmx, DRV0, mx, RV0, RVx){
+    ti <- Dmx + (DRV0 * (mx + Dmx)) / (2 + RV0);
+    if(ti > RVx){
+        return(1);
+    }else{
+        return(0);
+    }
+}
+
+TIspace <- function(FecFun,SurFun,yr=20,yF=1,yR=1){
+    resvals <- rep(x=0, times=yr+1);
+    termi   <- 1000;
+    for(i in 1:(yr+1)){
+        resvals[i] <- sum((SurFun(i:termi)/SurFun(i))*FecFun(i:termi));
+    }
+    Fpar  <- seq(from=0, to=yF, length.out=100);
+    Rpar  <- seq(from=0, to=yR, length.out=100);
+    Space <- array(data=0,dim=c(100,100,yr));
+    for(age in 1:dim(Space)[3]){
+        for(i in 1:dim(Space)[1]){
+            for(j in 1:dim(Space)[2]){
+                CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),   # TI in fecundity 
+                              DRV0 =  Rpar[j],                   # TI in RV of offspring
+                              mx   =  FecFun(age),               # Age fecundity
+                              RV0  =  resvals[1],                # Offspring RV 
+                              RVx  =  resvals[age+1]             # RV at age x
+                );			
+                Space[i,j,age] <- CHECK;
+            }
+        }
+    }
+    return(Space);
+}
+
+Ffun  <- list(constantF.Pr.lo, constantF.Pr.hi, exponeupF.Pr.lo, exponeupF.Pr.hi,
+              exponednF.Pr.lo, exponednF.Pr.hi, humpedshF.Pr.lo, humpedshF.Pr.hi,
+              UshF.Pr.lo, UshF.Pr.hi);
+Sfun  <- list(constantP.Cu.lo, constantP.Cu.hi, exponeupP.Cu.lo, exponeupP.Cu.hi,
+              exponednP.Cu.lo, exponednP.Cu.hi, humpedshP.Cu.lo, humpedshP.Cu.hi,
+              UshP.Cu.lo, UshP.Cu.hi);
+Ffunl <-    c("constantF.Pr.lo", "constantF.Pr.hi", "exponeupF.Pr.lo", "exponeupF.Pr.hi",
+              "exponednF.Pr.lo", "exponednF.Pr.hi", "humpedshF.Pr.lo", "humpedshF.Pr.hi",
+              "UshF.Pr.lo", "UshF.Pr.hi");
+Sfunl <-    c("constantP.Cu.lo", "constantP.Cu.hi", "exponeupP.Cu.lo", "exponeupP.Cu.hi",
+              "exponednP.Cu.lo", "exponednP.Cu.hi", "humpedshP.Cu.lo", "humpedshP.Cu.hi",
+              "UshP.Cu.lo", "UshP.Cu.hi");
+
+rmat <- NULL;
+for(i in 1:length(Ffun)){ 
+    for(j in 1:length(Sfun)){
+        chk  <- TIspace(FecFun=Ffun[[i]], SurFun=Sfun[[j]]);
+        tot  <- sum(chk) / length(chk);
+        res  <- c(Ffunl[i], Sfunl[j], tot);
+        rmat <- rbind(rmat,res);
+    }
+}
+colnames(rmat) <- c("Fecundity", "Survival", "TI sum");
+ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
+print(rmat[ord,]);
 
 
 
 
 
+## A figure showing all of the curves
+setEPS();
+postscript("AllCurves.eps",height=12,width=8);
+x <- 1:20;
+# ---------------------------------------------------
+y <- constantF.Pr.lo(x);
+par(mfrow=c(5,2),mar=c(0.25,0.5,0.25,1),lwd=3,oma=c(5,5,1,5));
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- constantF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- constantP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="A",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- constantP.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="B",cex=2.5);
+# ---------------------------------------------------
+y <- exponeupF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- exponeupF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- exponeupP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="C",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- exponeupP.Pr.hi(1:19);
+points(x=1:19,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="D",cex=2.5);
+# ---------------------------------------------------
+y <- exponednF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- exponednF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- exponednP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="E",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- exponednP.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="F",cex=2.5);
+# ---------------------------------------------------
+y <- humpedshF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- humpedshF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- humpedshP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="G",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- humpedshP.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="H",cex=2.5);
+# ---------------------------------------------------
+y <- UshF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+axis(side=1,at=c(0,5,10,15,20),cex.axis=2);
+y <- UshF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- UshP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="I",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- UshP.Pr.hi(1:19);
+points(x=1:19,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="J",cex=2.5);
+axis(side=1,at=c(0,5,10,15,20),cex.axis=2);
 
+mtext(expression(paste("Age")),
+      outer=TRUE,side=1,line=3.5,cex=1.75);
 
+mtext(expression(paste("Fecundity")),
+      outer=TRUE,side=2,line=2.5,cex=1.75);
 
+mtext(expression(paste("Survival probability")),
+      outer=TRUE,side=4,line=3,cex=1.75);
 
-
+dev.off();
 
 
 

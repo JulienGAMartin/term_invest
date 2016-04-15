@@ -2,9 +2,11 @@
 
 \usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}
 \usepackage{amssymb}
+\usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{natbib}
 \usepackage{lineno}
+\usepackage{rotating}
 \linenumbers
 
 \begin{document}
@@ -176,7 +178,6 @@ Terminal investment is beneficial when the in direct fitness plus the weighted g
 \section{Discussion}
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% References
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,7 +200,31 @@ Terminal investment is beneficial when the in direct fitness plus the weighted g
 %%%%%%%%%%%%%% appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\section*{Supplementary materials}
+\section*{Supplementary materials}
+
+
+\begin{sidewaystable}
+\begin{center}
+\begin{tabular}{llcccccccccc}
+\hline
+& & \multicolumn{10}{c}{\underline{Survival}}
+& & & \multicolumn{2}{c}{Constant} & \multicolumn{2}{c}{Exp. Up}  &  \multicolumn{2}{c}{Exp. Down} &  \multicolumn{2}{c}{Humped}  & \multicolumn{2}{c}{U-shaped} \\
+\multicolumn{2}{c}{\underline{Fecundity}}& Low & High &  Low & High & Low & High & Low & High & Low & High \\
+\hline
+\multirow{ 2}{*}{Constant}   & Low   & 0.0380 & -- & -- & -- & 0.1441 & 0.0162 & 0.0415 & 0.1580 & 0.0194 & -- \\
+                             & High  & -- & -- &  -- & -- & 0.0454 & 0.0001 & 0.0079 & 0.0015 & 0.0001 & -- \\
+\multirow{ 2}{*}{Exp. Up}    & Low   & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+                             & High  & -- & -- & -- & -- & 0.1003 & $<$0.0001 & 0.0204 & 0.0021 & 0.0003 & -- \\
+\multirow{ 2}{*}{Exp. Down}  & Low   & 0.0112 & -- & 0.0015 & -- & 0.0153 & 0.0130 & 0.0141 & 0.0125 & 0.0034 & -- \\
+                             & High  & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\multirow{ 2}{*}{Humped}     & Low   & 0.0047 & -- & 0.0002 & -- & 0.0064 & 0.0034 & 0.0066 & 0.0047 & 0.0007 & -- \\
+                             & High  & 0.0033 & -- &  -- & -- & 0.0049 & 0.0029 & 0.0050 & 0.0034 & $<$0.0001 & -- \\
+\multirow{ 2}{*}{U-shaped}   & Low   & 0.4545 & -- &  0.1350 & -- & 0.5320 & 0.4293 & 0.4400 & 0.0682 & 0.3805 & -- \\
+                             & High  & 0.2485 & -- & -- & -- & 0.3537 & 0.2146 & 0.1531 & 0.0065 & 0.2119 & -- \\
+\hline
+\end{tabular}
+\end{center}
+\end{sidewaystable}
 
 
 \end{document}
