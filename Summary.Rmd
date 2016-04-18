@@ -2,7 +2,7 @@
 title: "Guided notes and code for terminal investment"
 author: "Brad Duthie"
 date: "10 April 2016"
-output: html_document
+output: pdf_document
 ---
 
 Starting summary
@@ -225,7 +225,7 @@ UshP.Cu.hi <- function(age,sd=5){
 
 Using the above survival and fecundity curves, we can predict terminal investment using the equation derived from our modelling work,
 
-$$	\Delta m_x  + \frac{ \Delta RV_{0} \left(m_x + \Delta m_{x}\right)}{ 2 + RV_0 } > RV'_{x} $$
+$$\Delta m_x  + \frac{ \Delta RV_{0} \left(m_x + \Delta m_{x}\right)}{ 2 + RV_0 } > RV'_{x} $$
 
 In the above, $m_{x}$ is fecundity at age $x$, while $\Delta m_{x}$ is the gain in fecundity from terminally investing in age $x$. Similarly, $RV_{0}$ is the reproductive value of offspring, and $\Delta RV_{0}$ is the increase in the reproductive value of offspring after termainal investment. The term $RV'_{x}$ is the residual reproductive value of an individual that does not terminally invest. Hence, terminal investment increases fitness if the left-hand side of the above equation is greater than the residual reproductive value of a female. To analyse our model, we define the equivalent function in R below.
 
@@ -293,16 +293,103 @@ rmat <- NULL;
 for(i in 1:length(Ffun)){ 
   for(j in 1:length(Sfun)){
     chk  <- TIspace(FecFun=Ffun[[i]], SurFun=Sfun[[j]]);
-    tot  <- sum(chk);
+    tot  <- sum(chk) / length(chk);
     res  <- c(Ffunl[i], Sfunl[j], tot);
     rmat <- rbind(rmat,res);
   }
 }
 colnames(rmat) <- c("Fecundity", "Survival", "TI sum");
-ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
-print(rmat[ord,]);
+#ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
+#print(rmat[ord,]);
+print(rmat);
 ```
 
-The above table is ordered by the size of the parameter space explored in which terminal investment is predicted (third column). Terminal investment occurs in `r round(sum(rmat[,3]>0)/dim(rmat)[1],digits=2)` proportion of simulated conditions, overall.
+The above table is ordered by the size of the parameter space explored in which terminal investment is predicted (third column). Terminal investment occurs in r round(sum(rmat[,3]>0)/dim(rmat)[1],digits=2) proportion of simulated conditions, overall.
 
+Building some key figures
+=====================================
+
+We can build a figure showing all of the fecundity and survival curves below.
+
+```{r, fig.width = 8, fig.height = 12}
+x <- 1:20;
+# ---------------------------------------------------
+y <- constantF.Pr.lo(x);
+par(mfrow=c(5,2),mar=c(0.25,0.5,0.25,1),lwd=3,oma=c(5,5,1,5));
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- constantF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- constantP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="A",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- constantP.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="B",cex=2.5);
+# ---------------------------------------------------
+y <- exponeupF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- exponeupF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- exponeupP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="C",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- exponeupP.Pr.hi(1:19);
+points(x=1:19,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="D",cex=2.5);
+# ---------------------------------------------------
+y <- exponednF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- exponednF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- exponednP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="E",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- exponednP.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="F",cex=2.5);
+# ---------------------------------------------------
+y <- humpedshF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- humpedshF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- humpedshP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="G",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- humpedshP.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="H",cex=2.5);
+# ---------------------------------------------------
+y <- UshF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+axis(side=1,at=c(0,5,10,15,20),cex.axis=2);
+y <- UshF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+y <- UshP.Pr.lo(x);
+text(x=19.5,y=28.5,labels="I",cex=2.5);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",xaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+y <- UshP.Pr.hi(1:19);
+points(x=1:19,y=y,type="l",lwd=3,lty="dashed");
+text(x=19.5,y=28.5/30,labels="J",cex=2.5);
+axis(side=1,at=c(0,5,10,15,20),cex.axis=2);
+
+mtext(expression(paste("Age")),
+	outer=TRUE,side=1,line=3.5,cex=1.75);
+
+mtext(expression(paste("Fecundity")),
+	outer=TRUE,side=2,line=2.5,cex=1.75);
+
+mtext(expression(paste("Survival probability")),
+	outer=TRUE,side=4,line=3,cex=1.75);
+
+```
 
