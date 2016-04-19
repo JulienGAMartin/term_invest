@@ -592,7 +592,7 @@ TIspace <- function(FecFun,SurFun,yr=20,yF=1,yR=1){
     for(age in 1:dim(Space)[3]){
         for(i in 1:dim(Space)[1]){
             for(j in 1:dim(Space)[2]){
-                CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),   # TI in fecundity 
+                CHECK <- lhs( Dmx  =  Fpar[i] * FecFun(i),       # TI in fecundity 
                               DRV0 =  Rpar[j],                   # TI in RV of offspring
                               mx   =  FecFun(age),               # Age fecundity
                               RV0  =  resvals[1],                # Offspring RV 
@@ -727,23 +727,23 @@ dev.off();
 
 # -----------------------------------------------------------------------
 # Function plot the space of terminal investment (requires lhs() and TIplot() [above]).
-# yr: How many years to consider.
+# yr: How many years to consider. 
 # yF: Shows maximum plotted for increase in fecundity.
 # yR: Shows maximum plotted for increase in offspring reproductive value.
-TIspace <- function(FecFun,SurFun,PrDead=0.99){
+TIspace <- function(FecFun,SurFun,PrDead=0.99,yF=1,yR=1){
     yr       <- sum(SurFun(1:1000)>(1-PrDead)) + 1;
     resvals1 <- rep(x=0, times=yr+1);
-    resvals2 <- rep(x=0, times=yr+1);
+    #resvals2 <- rep(x=0, times=yr+1); TODO: Double-check old way wasn't correct
     termi    <- 10000;
-    RVal     <- sum((SurFun(1:termi))*FecFun(1:termi));
-    for(i in 1:(yr+1)){
+    #RVal     <- sum((SurFun(1:termi))*FecFun(1:termi));
+    for(i in 1:(yr+1)){ #TODO: RV at age+1 should just be defined below, right?
         # Reproductive value is resvals1:
-        resvals1[i] <- sum((SurFun((i+0):termi)/SurFun(i))*FecFun((i+0):termi));
+        resvals1[i] <- sum((SurFun(i:termi)/SurFun(i))*FecFun(i:termi));
         # Residual reproductive value is resvals2:
-        resvals2[i] <- sum((SurFun((i+1):termi)/SurFun(i))*FecFun((i+1):termi));
-    }
-    Fpar  <- seq(from=0, to=RVal, length.out=100);   # From 0 to 100% TI lifetime fec.
-    Rpar  <- seq(from=0, to=RVal, length.out=100);   # From 0 to 100% TI offspring RV.
+        # resvals2[i] <- sum((SurFun((i+1):termi)/SurFun(i))*FecFun((i+1):termi));
+    } #TODO: As in line 743 was incorrect (we seemed to have abandoned it a whie back)
+    Fpar  <- seq(from=0, to=yF, length.out=100);   # From 0 to 100% TI lifetime fec.
+    Rpar  <- seq(from=0, to=yR, length.out=100);   # From 0 to 100% TI offspring RV.
     Space <- array(data=0,dim=c(100,100,yr));
     for(age in 1:dim(Space)[3]){
         for(i in 1:dim(Space)[1]){
@@ -752,7 +752,7 @@ TIspace <- function(FecFun,SurFun,PrDead=0.99){
                               DRV0 =  Rpar[j],              # TI in RV of offspring
                               mx   =  FecFun(age),          # Age fecundity
                               RV0  =  resvals1[1],          # Offspring RV 
-                              RVx  =  resvals2[age]         # RV at age x
+                              RVx  =  resvals1[age+1]       # RV at age x
                 );			
                 Space[i,j,age] <- CHECK;
             }
