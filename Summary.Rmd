@@ -299,12 +299,12 @@ for(i in 1:length(Ffun)){
   }
 }
 colnames(rmat) <- c("Fecundity", "Survival", "TI sum");
-#ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
-#print(rmat[ord,]);
-print(rmat);
+#print(rmat);
+ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
+print(rmat[ord,]);
 ```
 
-The above table is ordered by the size of the parameter space explored in which terminal investment is predicted (third column). Terminal investment occurs in r round(sum(rmat[,3]>0)/dim(rmat)[1],digits=2) proportion of simulated conditions, overall.
+The above table is ordered by the size of the parameter space explored in which terminal investment is predicted (third column). Terminal investment occurs in `r round(sum(rmat[,3]>0)/dim(rmat)[1],digits=2)` proportion of simulated conditions, overall.
 
 Building some key figures
 =====================================
@@ -392,4 +392,152 @@ mtext(expression(paste("Survival probability")),
 	outer=TRUE,side=4,line=3,cex=1.75);
 
 ```
+
+
+Consider only up to 99.9% mortality (25 NOV 2016)
+=====================================
+
+Given notes from earlier in NOV 2016, the code below will check for terminal investment with a maximum age being the last age at which <= 99.9% individuals are predicted to still be alive (i.e., for a population of a 1000, only 1 individual would be expected to live to the age). The code below introduces the new function `age_cutoff`, which identifies the critical age for a given survival probability distribution function.
+
+```{r}
+# Just put in a survival distribution, max possible years is 1000
+age_cutoff <- function(survival.distr, max=1000){
+    cumulatives <- survival.distr(1:max) * max; # Criteria now > 1
+    cutoff      <- sum(cumulatives >= 1);
+    return(cutoff);
+}
+
+```
+
+Now we can set the age explicitly when looping through all combinations of survival and fecundity functions. This makes a table that is comparable to the table listed above in which the maximum age was always 20.
+
+```{r}
+rmat <- NULL;
+for(i in 1:length(Ffun)){ 
+  for(j in 1:length(Sfun)){
+    cut  <- age_cutoff(Sfun[[j]]);
+    chk  <- TIspace(FecFun=Ffun[[i]], SurFun=Sfun[[j]], yr=cut);
+    tot  <- sum(chk) / length(chk);
+    res  <- c(Ffunl[i], Sfunl[j], tot);
+    rmat <- rbind(rmat,res);
+  }
+}
+colnames(rmat) <- c("Fecundity", "Survival", "TI sum");
+#print(rmat);
+ord  <- order(x=as.numeric(rmat[,3]),decreasing=TRUE);
+print(rmat[ord,]);
+```
+
+As previously, the table above is ordered by the size of parameter space explored in which TI is predicted, but now the last age explored is that in which only 1 in 1000 individuals are predicted to have survived. Terminal investment now occurs in `r round(sum(rmat[,3]>0)/dim(rmat)[1],digits=2)` proportion of simulated conditions.
+
+Similarly, we can build a figure showing what each curve *really* looks like, given our cutoff threshold for mortality.
+
+```{r, fig.width = 8, fig.height = 12}
+x <- 1:20;
+# ---------------------------------------------------
+y <- constantF.Pr.lo(x);
+par(mfrow=c(5,3),mar=c(1,1,1,1),lwd=3,oma=c(5,5,3,5));
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=1,yaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- constantF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+
+a <- age_cutoff(constantP.Cu.lo);
+y <- constantP.Pr.lo(1:a);
+#text(x=19.5,y=28.5,labels="A",cex=2.5);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n");
+a <- age_cutoff(constantP.Cu.hi);
+y <- constantP.Pr.hi(1:a);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,lty="dashed",yaxt="n");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+#text(x=1,y=28.5/30,labels="B",cex=2.5);
+# ---------------------------------------------------
+y <- exponeupF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=1,yaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- exponeupF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+
+a <- age_cutoff(exponeupP.Cu.lo);
+y <- exponeupP.Pr.lo(1:a);
+#text(x=19.5,y=28.5,labels="C",cex=2.5);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n");
+a <- age_cutoff(exponeupP.Cu.hi);
+y <- exponeupP.Pr.hi(1:a);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",lty="dashed");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+#text(x=1,y=28.5/30,labels="D",cex=2.5);
+# ---------------------------------------------------
+y <- exponednF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=1,yaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- exponednF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+
+a <- age_cutoff(exponednP.Cu.lo);
+y <- exponednP.Pr.lo(1:a);
+#text(x=19.5,y=28.5,labels="E",cex=2.5);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n");
+a <- age_cutoff(exponednP.Cu.hi);
+y <- exponednP.Pr.hi(1:a);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",lty="dashed");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+#text(x=1,y=28.5/30,labels="F",cex=2.5);
+# ---------------------------------------------------
+y <- humpedshF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=1,yaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+y <- humpedshF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+
+a <- age_cutoff(humpedshP.Cu.lo);
+y <- humpedshP.Pr.lo(1:a);
+#text(x=19.5,y=28.5,labels="G",cex=2.5);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n");
+a <- age_cutoff(humpedshP.Cu.hi);
+y <- humpedshP.Pr.hi(1:a);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",lty="dashed");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+#text(x=1,y=28.5/30,labels="H",cex=2.5);
+# ---------------------------------------------------
+y <- UshF.Pr.lo(x);
+plot(x=x,y=y,type="l",xlab="",ylab="",lwd=2,ylim=c(0,30),cex.lab=1,yaxt="n");
+axis(side=2,at=c(0,5,10,15,20,25),cex.axis=2);
+#axis(side=1,at=c(0,5,10,15,20),cex.axis=2);
+y <- UshF.Pr.hi(x);
+points(x=x,y=y,type="l",lwd=3,lty="dashed");
+
+a <- age_cutoff(UshP.Cu.lo);
+y <- UshP.Pr.lo(1:a);
+#text(x=19.5,y=28.5,labels="I",cex=2.5);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n");
+
+a <- age_cutoff(UshP.Cu.hi);
+y <- UshP.Pr.hi(1:a);
+plot(x=1:a,y=y,type="l",xlab="",ylab="",lwd=3,ylim=c(0,1),cex.lab=2,yaxt="n",lty="dashed");
+axis(side=4,at=c(0,0.2,0.4,0.6,0.8),cex.axis=2);
+#text(x=1,y=28.5/30,labels="J",cex=2.5);
+
+
+mtext(expression(paste("Fecundity            Low Survival           High Survival")),
+	outer=TRUE,side=3,cex=1);
+
+mtext(expression(paste("Age")),
+	outer=TRUE,side=1,line=3.5,cex=1.75);
+
+mtext(expression(paste("Fecundity")),
+	outer=TRUE,side=2,line=2.5,cex=1.75);
+
+mtext(expression(paste("Survival probability")),
+	outer=TRUE,side=4,line=3,cex=1.75);
+
+```
+
+The differences on the x-axis of survival (middle and right columns) show that there is quite a bit of variance among different types of curves. Further, for the low survival, the hump-shaped and u-shaped curves aren't actually humped or -ushaped because survival to the relevant age is almost zero. It is tempting to only look at high survival probability, in light of this.
+
+
+
+
+
+
 
